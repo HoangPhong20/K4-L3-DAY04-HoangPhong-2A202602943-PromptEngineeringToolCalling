@@ -6,7 +6,7 @@
 
 - Tên nhóm: Cá nhân - Hoang Phong
 - Người đại diện / MSSV: Hoang Phong / 2A202602943
-- Tên repo: `K4-L3-DAY04-HoVaTen-MSSV-PromptEngineeringToolCalling`
+- Tên repo: `K4-L3-DAY04-Hoàng Phong-2A202602943-PromptEngineeringToolCalling`
 - URL repo, nhánh nộp, commit chốt: https://github.com/HoangPhong20/K4-L3-DAY04-HoangPhong-2A202602943-PromptEngineeringToolCalling
 - Deadline áp dụng và link thông báo đổi hạn nếu có:
 
