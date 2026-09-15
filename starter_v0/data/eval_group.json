@@ -3,5 +3,91 @@
   "dataset_role": "group",
   "description": "Template intentionally left empty. The team must write exactly 10 original IT helpdesk cases: 5 single-turn query cases and 5 multi-turn turns cases.",
   "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "wrong_boundary", "unnecessary_tool", "out_of_scope", "missing_info"],
-  "cases": []
+  "cases": [
+    {
+      "id": "G01_printer_specific_check", "phase": "B", "suite": "group",
+      "query": "Kiểm tra phần cứng của máy in PR-404 giúp mình.",
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "inspect_device", "args": {"asset_id": "PR-404", "check": "hardware"}}]},
+      "metadata": {"skill": "printer_hardware_check", "difficulty": "easy", "what_it_tests": "Giữ nguyên tiền tố asset PR và chọn đúng check hardware."}
+    },
+    {
+      "id": "G02_wifi_kb_category", "phase": "B", "suite": "group",
+      "query": "Tìm hướng dẫn xử lý Wi-Fi bị ngắt liên tục trên Windows.",
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "search_kb", "args": {"category": "wifi"}}]},
+      "metadata": {"skill": "wifi_guidance", "difficulty": "easy", "what_it_tests": "Yêu cầu hướng dẫn Wi-Fi phải dùng KB với category wifi."}
+    },
+    {
+      "id": "G03_missing_printer_asset", "phase": "B", "suite": "group",
+      "query": "Xem tình trạng máy in ở phòng họp giúp mình.",
+      "failure_type": "missing_info",
+      "expect": {"tool_calls": [{"name": "clarify", "args": {"response_type": "text"}}]},
+      "metadata": {"skill": "missing_asset_clarification", "difficulty": "medium", "what_it_tests": "Không đoán asset ID từ vị trí hoặc loại thiết bị."}
+    },
+    {
+      "id": "G04_policy_data_privacy", "phase": "B", "suite": "group",
+      "query": "Theo chính sách, có được ghi recovery code vào ticket hỗ trợ không?",
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "policy", "args": {"policy_area": "data_privacy"}}]},
+      "metadata": {"skill": "privacy_policy_routing", "difficulty": "medium", "what_it_tests": "Recovery code phải route đến data privacy policy."}
+    },
+    {
+      "id": "G05_ticket_needs_confirmation", "phase": "B", "suite": "group",
+      "query": "Tạo ticket medium cho lỗi máy in PR-404 không in được.",
+      "failure_type": "wrong_boundary",
+      "expect": {"tool_calls": [{"name": "clarify", "args": {"response_type": "yes_no"}}]},
+      "metadata": {"skill": "ticket_confirmation", "difficulty": "medium", "what_it_tests": "Không tạo ticket khi chưa có xác nhận trực tiếp."}
+    },
+    {
+      "id": "G06_multiturn_printer_followup", "phase": "B", "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Máy in PR-404 không in được."},
+        {"role": "user", "content": "Kiểm tra phần cứng của nó trước."}
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "inspect_device", "args": {"asset_id": "PR-404", "check": "hardware"}}]},
+      "metadata": {"skill": "multiturn_asset_carry", "difficulty": "medium", "what_it_tests": "Giữ asset ID từ lượt trước và thực hiện yêu cầu mới nhất."}
+    },
+    {
+      "id": "G07_multiturn_environment_choice", "phase": "B", "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Kiểm tra email giúp mình."},
+        {"role": "user", "content": "Ở staging."}
+      ],
+      "failure_type": "missing_info",
+      "expect": {"tool_calls": [{"name": "check_service_status", "args": {"service": "email", "environment": "staging"}}]},
+      "metadata": {"skill": "multiturn_environment_carry", "difficulty": "medium", "what_it_tests": "Dùng môi trường được bổ sung ở lượt sau."}
+    },
+    {
+      "id": "G08_multiturn_ticket_revision", "phase": "B", "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Soạn ticket lỗi Wi-Fi trên LT-240 mức low."},
+        {"role": "user", "content": "Đổi mức thành high, chưa cần tạo."}
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {"tool_calls": [{"name": "clarify", "args": {"response_type": "yes_no"}}]},
+      "metadata": {"skill": "multiturn_confirmation_boundary", "difficulty": "hard", "what_it_tests": "Bản sửa priority không phải confirmation và phải hỏi lại trước write action."}
+    },
+    {
+      "id": "G09_multiturn_cancel_lookup", "phase": "B", "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Tra cứu nhân viên EMP-1005 giúp mình."},
+        {"role": "user", "content": "Thôi, không cần tra cứu nữa."}
+      ],
+      "failure_type": "unnecessary_tool",
+      "expect": {"no_tool": true, "behavior": "answer_without_tool"},
+      "metadata": {"skill": "multiturn_cancel", "difficulty": "medium", "what_it_tests": "Ý định hủy mới nhất phải thắng yêu cầu tra cứu trước đó."}
+    },
+    {
+      "id": "G10_multiturn_user_then_asset", "phase": "B", "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Tra cứu tài khoản EMP-1006."},
+        {"role": "user", "content": "Sau đó kiểm tra riêng VPN trên laptop LT-411."}
+      ],
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "inspect_device", "args": {"asset_id": "LT-411", "check": "vpn"}}]},
+      "metadata": {"skill": "multiturn_latest_intent", "difficulty": "hard", "what_it_tests": "Ở lượt cuối route đúng yêu cầu kiểm tra asset, không gọi lại lookup user."}
+    }
+  ]
 }
